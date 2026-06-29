@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mohmed Husain Pasheriya | AI Backend Engineer</title>
+  
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ----- CSS Variables & Reset ----- */
+    :root {
+      --bg-color: #030305;
+      --text-main: #f5f5f7;
+      --text-muted: #a1a1a6;
+      --accent: #6b7cff;
+      --accent-glow: rgba(107, 124, 255, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.02);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(255, 255, 255, 0.05);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: none; /* Custom cursor fallback */
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    body.loading {
+      overflow: hidden;
+    }
+
+    /* ----- Preloader ----- */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #020204;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.8s ease;
+      overflow: hidden;
+    }
+    
+    .loader-content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    
+    .loader-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: #fff;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s forwards 0.2s;
+    }
+    
+    .loader-bar-container {
+      width: 240px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .loader-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+      transition: width 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    
+    .loader-progress {
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s forwards 0.3s;
+    }
+    
+    .loader-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s forwards 0.4s;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    #preloader.loaded {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    /* ----- Translucent Glass Header ----- */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 99999;
+      background: rgba(3, 3, 5, 0.4);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--glass-border);
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+    }
+    
+    body.loading .site-header {
+      transform: translateY(-100%);
+    }
+    
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #fff;
+      text-decoration: none;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      letter-spacing: 0.02em;
+    }
+    
+    .nav-link:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 1.2rem;
+      }
+      .nav-link:not(:nth-child(1)):not(:nth-child(4)):not(:last-child) {
+        display: none;
+      }
+    }
+    
+    /* ----- Custom Cursor ----- */
+    .cursor {
+      width: 18px;
+      height: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000000;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s ease, border-color 0.2s ease;
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(2px);
+    }
+    .cursor.hover {
+      transform: translate(-50%, -50%) scale(2.5);
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      mix-blend-mode: screen;
+    }
+
+    /* ----- Ambient Background ----- */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at 15% 50%, rgba(107, 124, 255, 0.05), transparent 40%),
+                  radial-gradient(circle at 85% 30%, rgba(135, 90, 255, 0.05), transparent 40%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ----- Hero Cinematic Sequence ----- */
+    #hero-sequence {
+      height: 600vh; /* Scroll length for animation */
+      position: relative;
+      z-index: 2;
+    }
+
+    .sticky-container {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-color);
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover; /* CSS handles responsive aspect ratio */
+      z-index: 1;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    
+    .overlay-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent 0%, var(--bg-color) 90%),
+                  radial-gradient(circle at center, transparent 0%, rgba(3,3,5,0.7) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .hero-text-container {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      max-width: 900px;
+      padding: 2rem;
+      width: 100%;
+    }
+
+    .hero-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      opacity: 0;
+      will-change: opacity, transform;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #fff 0%, #a1a1a6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    
+    .hero-text h2 {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    
+    .hero-text h3 {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    
+    .hero-text p {
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+      color: #d1d1d6;
+      line-height: 1.5;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ----- Buttons ----- */
+    .btn-group {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 1rem 2.5rem;
+      border-radius: 40px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-primary {
+      background: rgba(107, 124, 255, 0.1);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 20px rgba(107, 124, 255, 0.15);
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 30px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      color: var(--text-main);
+      border: 1px solid var(--glass-border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* ----- Main Portfolio Content ----- */
+    #main-content {
+      position: relative;
+      background: var(--bg-color);
+      z-index: 10;
+      padding-bottom: 100px;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8rem 2rem;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 3rem;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    
+    .section-title span {
+      color: var(--accent);
+    }
+
+    /* ----- Glass Cards ----- */
+    .glass-card {
+      background: linear-gradient(145deg, var(--glass-bg), transparent);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,0.15);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    /* ----- Skills Grid ----- */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .skill-category h3 {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+    
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    
+    .skill-tag {
+      background: rgba(255,255,255,0.03);
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+    }
+    
+    .skill-tag:hover {
+      background: rgba(107, 124, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ----- Experience ----- */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 4rem;
+    }
+    
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: -2.35rem;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg-color);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .timeline-date {
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .timeline-item h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+    
+    .timeline-item h4 {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    
+    .timeline-item p {
+      color: var(--text-muted);
+    }
+    
+    .timeline-item ul {
+      list-style-type: none;
+      margin-top: 1rem;
+    }
+    
+    .timeline-item ul li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.8rem;
+      color: #d1d1d6;
+    }
+    
+    .timeline-item ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* ----- Projects Grid ----- */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .project-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+      color: #fff;
+    }
+    
+    .project-tech {
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    
+    .project-card p {
+      color: var(--text-muted);
+      flex-grow: 1;
+      font-size: 0.95rem;
+    }
+
+    /* ----- Education & Certifications ----- */
+    .edu-cert-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .cert-list {
+      list-style-type: none;
+    }
+    
+    .cert-list li {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--glass-border);
+      color: #d1d1d6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .cert-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .cert-list li span.year {
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ----- Contact ----- */
+    .contact-content {
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+    
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+    
+    .contact-link {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      transition: color 0.3s ease, transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .contact-link:hover {
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    /* ----- Responsive ----- */
+    @media (max-width: 900px) {
+      .edu-cert-container { grid-template-columns: 1fr; }
+      .contact-links { flex-direction: column; gap: 1.5rem; }
+      .btn-group { flex-direction: column; }
+    }
+    
+    @media (max-width: 768px) {
+      .section { padding: 5rem 1.5rem; }
+      .timeline { padding-left: 1rem; }
+    }
+
+    /* ----- Scroll Widget ----- */
+    .scroll-widget {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(3, 3, 5, 0.4);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      outline: none;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, opacity 0.4s ease, visibility 0.4s ease;
+      opacity: 0;
+      visibility: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    
+    .scroll-widget.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .scroll-widget:hover {
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    
+    .scroll-widget svg {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .scroll-widget.up svg {
+      transform: rotate(180deg);
+    }
+    
+    body.loading .scroll-widget {
+      opacity: 0;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body class="loading">
+  
+  <!-- Preloader Screen -->
+  <div id="preloader">
+    <div class="loader-content">
+      <div class="loader-logo">MHP</div>
+      <div class="loader-progress">0%</div>
+      <div class="loader-bar-container">
+        <div class="loader-bar"></div>
+      </div>
+      <div class="loader-status">Initializing Systems...</div>
+    </div>
+  </div>
+  
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+
+  <!-- Translucent Glass Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="#" class="logo hover-target">MHP</a>
+      <nav class="nav-links">
+        <a href="#about" class="nav-link hover-target">About</a>
+        <a href="#skills" class="nav-link hover-target">Skills</a>
+        <a href="#experience" class="nav-link hover-target">Experience</a>
+        <a href="#projects" class="nav-link hover-target">Projects</a>
+        <a href="#contact" class="nav-link hover-target" style="border: 1px solid var(--glass-border); padding: 0.5rem 1.2rem; border-radius: 20px; background: var(--glass-bg);">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Scroll Widget -->
+  <button id="scroll-widget" class="scroll-widget hover-target" aria-label="Scroll helper">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <polyline points="19 12 12 19 5 12"></polyline>
+    </svg>
+  </button>
+  
+  <!-- Ambient Noise Background -->
+  <div class="ambient-bg"></div>
+
+  <!-- Hero Cinematic Sequence -->
+  <div id="hero-sequence">
+    <div class="sticky-container">
+      <canvas id="sequence-canvas"></canvas>
+      <div class="overlay-gradient"></div>
+      
+      <div class="hero-text-container">
+        <!-- Text 1: Greeting -->
+        <div class="hero-text" id="text-1">
+          <h1>Hi, I'm Mohmed Husain Pasheriya</h1>
+        </div>
+        
+        <!-- Text 2: Roles -->
+        <div class="hero-text" id="text-2">
+          <h2>AI Backend Engineer</h2>
+          <h3>Ex-SDE Intern @ Glynac AI</h3>
+        </div>
+        
+        <!-- Text 3: Tagline & CTA -->
+        <div class="hero-text" id="text-3">
+          <p>Building scalable, AI-powered backend systems, multi-agent architectures, and intelligent data pipelines.</p>
+          <div class="btn-group">
+            <a href="#projects" class="btn btn-primary hover-target">View My Work</a>
+            <a href="Mohmed_Husain_Pasheriya_SDE-15.pdf" target="_blank" class="btn btn-secondary hover-target">Download Resume</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Portfolio Sections -->
+  <main id="main-content">
+    
+    <!-- About Section -->
+    <section class="section" id="about">
+      <h2 class="section-title">About <span>Me</span></h2>
+      <div class="glass-card hover-target">
+        <p style="font-size: 1.15rem; color: #d1d1d6; line-height: 1.8;">
+          I am a Computer Science & Engineering student at IIIT Vadodara (Class of 2027), specializing in backend systems, cloud infrastructure, and AI integration. I am deeply passionate about building multi-agent AI systems, RAG pipelines, and orchestration architectures for production-grade SaaS platforms. My focus is on creating secure, high-performance, and scalable solutions that bridge the gap between complex AI models and intuitive user experiences.
+        </p>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section" id="skills">
+      <h2 class="section-title">Skills & <span>Technologies</span></h2>
+      <div class="skills-grid">
+        <div class="glass-card skill-category hover-target">
+          <h3>AI & Agents</h3>
+          <div class="skill-tags">
+            <span class="skill-tag hover-target">LangGraph</span>
+            <span class="skill-tag hover-target">LangChain</span>
+            <span class="skill-tag hover-target">OpenAI API</span>
+            <span class="skill-tag hover-target">Ollama</span>
+            <span class="skill-tag hover-target">RAG Pipelines</span>
+            <span class="skill-tag hover-target">Multi-Agent Systems</span>
+            <span class="skill-tag hover-target">ChromaDB</span>
+            <span class="skill-tag hover-target">Pinecone</span>
+            <span class="skill-tag hover-target">pgvector</span>
+          </div>
+        </div>
+        <div class="glass-card skill-category hover-target">
+          <h3>Backend Frameworks</h3>
+          <div class="skill-tags">
+            <span class="skill-tag hover-target">Python</span>
+            <span class="skill-tag hover-target">FastAPI</span>
+            <span class="skill-tag hover-target">Django</span>
+            <span class="skill-tag hover-target">Flask</span>
+            <span class="skill-tag hover-target">REST APIs</span>
+            <span class="skill-tag hover-target">Microservices</span>
+          </div>
+        </div>
+        <div class="glass-card skill-category hover-target">
+          <h3>Databases</h3>
+          <div class="skill-tags">
+            <span class="skill-tag hover-target">PostgreSQL</span>
+            <span class="skill-tag hover-target">SQLAlchemy</span>
+            <span class="skill-tag hover-target">MySQL</span>
+            <span class="skill-tag hover-target">Firebase</span>
+            <span class="skill-tag hover-target">Redis</span>
+          </div>
+        </div>
+        <div class="glass-card skill-category hover-target">
+          <h3>Cloud & Tools</h3>
+          <div class="skill-tags">
+            <span class="skill-tag hover-target">AWS</span>
+            <span class="skill-tag hover-target">Docker</span>
+            <span class="skill-tag hover-target">Git / GitHub</span>
+            <span class="skill-tag hover-target">Postman</span>
+            <span class="skill-tag hover-target">Pandas</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="section" id="experience">
+      <h2 class="section-title">Professional <span>Experience</span></h2>
+      <div class="timeline">
+        
+        <div class="timeline-item hover-target">
+          <div class="timeline-date">Dec 2025 – Present</div>
+          <h3>AI Backend Engineer (Intern)</h3>
+          <h4>Quba Infotech</h4>
+          <ul>
+            <li>Building an AI Meeting Assistant using FastAPI, LangChain, and OpenAI/Ollama for transcript analysis.</li>
+            <li>Implemented semantic clustering strategies using K-Means optimization to reduce redundant transcript processing, improving summarization efficiency by approximately 30–40%.</li>
+            <li>Designed modular backend architecture with RAG integration using ChromaDB for semantic meeting search and memory.</li>
+          </ul>
+        </div>
+        
+        <div class="timeline-item hover-target">
+          <div class="timeline-date">Aug 2025 – Nov 2025</div>
+          <h3>Backend Engineer Intern</h3>
+          <h4>Glynac AI</h4>
+          <ul>
+            <li>Developed and optimized REST APIs using Python and Django to support scalable backend services and internal automation.</li>
+            <li>Improved backend processing efficiency by 15% by resolving N+1 query issues and introducing targeted database indexes.</li>
+            <li>Built a data pipeline integrating multiple existing internal tools and APIs to collect and process data for AI model workflows.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+      <h2 class="section-title">Featured <span>Projects</span></h2>
+      <div class="project-grid">
+        
+        <div class="glass-card project-card hover-target">
+          <h3>AI Meeting Assistant</h3>
+          <div class="project-tech">FastAPI • LangChain • K-Means Pipeline</div>
+          <p>AI system for transcript analysis, automated note generation, and semantic meeting search. Built a K-Means based transcript clustering pipeline to group similar meeting contexts before summarization.</p>
+        </div>
+        
+        <div class="glass-card project-card hover-target">
+          <h3>LeapSQL-AI</h3>
+          <div class="project-tech">FastAPI • LangGraph Multi-Agent System</div>
+          <p>Enterprise-grade Natural Language to SQL platform. Designed a 3-agent LangGraph pipeline (generator, evaluator, executor) with a 5-layer security model to prevent any destructive queries from reaching the database.</p>
+        </div>
+        
+        <div class="glass-card project-card hover-target">
+          <h3>Trading Alert System</h3>
+          <div class="project-tech">Django • Celery Event-Driven Platform</div>
+          <p>Real-time alert engine computing 5 technical indicators via Angel One SmartAPI. Built an asynchronous alert engine using Celery + Redis to evaluate multi-condition logic across 100+ tickers concurrently.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- Education & Certifications Section -->
+    <section class="section" id="education">
+      <h2 class="section-title">Education & <span>Certifications</span></h2>
+      <div class="edu-cert-container">
+        <div class="glass-card hover-target">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">B.Tech in Computer Science & Engineering</h3>
+          <p style="color: var(--accent); margin-bottom: 1.5rem;">Indian Institute of Information Technology, Vadodara</p>
+          <div class="timeline-date" style="margin-bottom: 0;">2023 – 2027 (Expected)</div>
+        </div>
+        
+        <div class="glass-card hover-target">
+          <h3 style="margin-bottom: 1.5rem; font-size: 1.3rem;">Certifications</h3>
+          <ul class="cert-list">
+            <li>Postman API Student Expert <span class="year">2025</span></li>
+            <li>Fundamentals of Deep Learning (NVIDIA DLI) <span class="year">2025</span></li>
+            <li>Django Certification (Simplilearn) <span class="year">2025</span></li>
+            <li>Microsoft Learn Student Ambassador <span class="year">2024</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leadership Section -->
+    <section class="section" id="leadership">
+      <h2 class="section-title">Leadership & <span>Extracurriculars</span></h2>
+      <div class="skills-grid">
+        <div class="glass-card hover-target">
+          <h3 style="margin-bottom: 0.3rem;">Social Media Lead</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Arcadia - Gaming Club of IIIT Vadodara</p>
+          <span style="color: var(--accent); font-size: 0.85rem; font-weight: 500;">May 2024 - April 2025</span>
+        </div>
+        <div class="glass-card hover-target">
+          <h3 style="margin-bottom: 0.3rem;">Member</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Technical Committee IIITV</p>
+          <span style="color: var(--accent); font-size: 0.85rem; font-weight: 500;">Jan 2025 - April 2025</span>
+        </div>
+        <div class="glass-card hover-target">
+          <h3 style="margin-bottom: 0.3rem;">Member</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">IIITV Finance & Consulting Club</p>
+          <span style="color: var(--accent); font-size: 0.85rem; font-weight: 500;">Aug 2023 - Sept 2024</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+      <div class="glass-card contact-content hover-target">
+        <h2 class="section-title" style="margin-bottom: 1.5rem; text-align: center;">Ready to <span>Connect?</span></h2>
+        <p style="font-size: 1.15rem; color: #d1d1d6; max-width: 600px; margin: 0 auto;">
+          I'm always open to discussing backend engineering roles, AI systems, or exciting open-source collaborations. Drop me a message!
+        </p>
+        <div class="contact-links">
+          <a href="mailto:mohmedhusain72@gmail.com" class="contact-link hover-target">
+            <span>Email Me</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">mohmedhusain72@gmail.com</span>
+          </a>
+          <a href="https://linkedin.com/in/mohmed-husain/" target="_blank" class="contact-link hover-target">
+            <span>LinkedIn</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">@mohmed-husain</span>
+          </a>
+          <a href="https://github.com/Mohmed-Husain" target="_blank" class="contact-link hover-target">
+            <span>GitHub</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">@Mohmed-Husain</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ==========================================
+    // 1. Custom Cursor Logic
+    // ==========================================
+    const cursor = document.getElementById('cursor');
+    
+    // Check if device supports hover (ignores mobile touch)
+    if (window.matchMedia("(any-hover: hover)").matches) {
+      document.addEventListener('mousemove', (e) => {
+        // Use requestAnimationFrame for smoother cursor
+        requestAnimationFrame(() => {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+      });
+      
+      const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+      hoverTargets.forEach(target => {
+        target.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        target.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+      });
+    } else {
+      cursor.style.display = 'none'; // hide on mobile
+    }
+
+    // ==========================================
+    // 2. Cinematic Canvas Sequence Logic
+    // ==========================================
+    const canvas = document.getElementById('sequence-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    const frameCount = 160;
+    // Helper to format frame path: sequence/frame_000_delay-0.05s.webp
+    const currentFrame = index => `sequence/frame_${index.toString().padStart(3, '0')}_delay-0.05s.webp`;
+
+    const images = new Array(frameCount);
+    let loadedImages = 0;
+
+    const loaderBar = document.querySelector('.loader-bar');
+    const loaderProgress = document.querySelector('.loader-progress');
+    const loaderStatus = document.querySelector('.loader-status');
+    const preloader = document.getElementById('preloader');
+
+    const statusMessages = [
+      "Initializing Core Systems...",
+      "Mapping Data Pipelines...",
+      "Configuring Neural Agents...",
+      "Syncing Multi-Agent flows...",
+      "Compiling Vector Memory...",
+      "Optimizing Engine Frames...",
+      "Rendering Experience..."
+    ];
+
+    let artificialProgress = 0;
+    const duration = 3000; // 3 seconds minimum
+    const intervalTime = 30; // ms per tick
+    const increment = 100 / (duration / intervalTime);
+
+    const progressInterval = setInterval(() => {
+      artificialProgress += increment;
+      if (artificialProgress >= 100) {
+        artificialProgress = 100;
+        clearInterval(progressInterval);
+        checkCompletion();
+      }
+      updateLoaderUI(Math.floor(artificialProgress));
+    }, intervalTime);
+
+    function updateLoaderUI(percentage) {
+      loaderBar.style.width = percentage + '%';
+      loaderProgress.textContent = percentage + '%';
+      
+      const msgIndex = Math.min(
+        statusMessages.length - 1,
+        Math.floor((percentage / 100) * statusMessages.length)
+      );
+      loaderStatus.textContent = statusMessages[msgIndex];
+    }
+
+    let autoScrollActive = false;
+    let autoScrollStartTime = null;
+    const autoScrollDuration = 9000; // 9 seconds cinematic flow for 160 frames (~18 FPS playback)
+
+    let scrollingActive = false;
+    let scrollStartTime = null;
+    let scrollStartY = 0;
+    let scrollTargetY = 0;
+    let scrollWaypoints = [];
+
+    function startAutoScroll() {
+      autoScrollActive = true;
+      autoScrollStartTime = null; 
+      requestAnimationFrame(animateAutoScroll);
+    }
+
+    function animateAutoScroll(timestamp) {
+      if (!autoScrollActive) return;
+      if (!autoScrollStartTime) autoScrollStartTime = timestamp;
+      
+      const elapsed = timestamp - autoScrollStartTime;
+      const progress = Math.min(elapsed / autoScrollDuration, 1);
+      
+      const maxScroll = heroSequence.scrollHeight - window.innerHeight;
+      window.scrollTo(0, progress * maxScroll);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateAutoScroll);
+      } else {
+        autoScrollActive = false;
+      }
+    }
+
+    function startCustomScroll(targetY) {
+      scrollingActive = true;
+      scrollStartY = window.scrollY;
+      scrollTargetY = targetY;
+      scrollStartTime = null;
+      
+      const maxScroll = heroSequence.scrollHeight - window.innerHeight;
+      scrollWaypoints = [];
+      
+      // Dynamic waypoint creation to slow down through the hero animation section
+      if (scrollStartY < maxScroll && targetY > maxScroll) {
+        // Scrolling DOWN crossing maxScroll: 70% of time spent scrolling slowly through hero sequence
+        scrollWaypoints.push({ y: maxScroll, t: 0.7 });
+        scrollWaypoints.push({ y: targetY, t: 1.0 });
+      } else if (scrollStartY > maxScroll && targetY < maxScroll) {
+        // Scrolling UP crossing maxScroll: 30% of time spent scrolling fast through content, 70% slow through sequence
+        scrollWaypoints.push({ y: maxScroll, t: 0.3 });
+        scrollWaypoints.push({ y: targetY, t: 1.0 });
+      } else {
+        // Direct phase
+        scrollWaypoints.push({ y: targetY, t: 1.0 });
+      }
+      
+      requestAnimationFrame(runCustomScroll);
+    }
+
+    function runCustomScroll(timestamp) {
+      if (!scrollingActive) return;
+      if (!scrollStartTime) scrollStartTime = timestamp;
+      
+      const elapsed = timestamp - scrollStartTime;
+      const totalDuration = 8000; // 8 seconds total journey time to keep it smooth & readable
+      const progress = Math.min(elapsed / totalDuration, 1);
+      
+      let prevY = scrollStartY;
+      let prevT = 0;
+      let currentY = scrollStartY;
+      
+      for (let i = 0; i < scrollWaypoints.length; i++) {
+        const wp = scrollWaypoints[i];
+        if (progress <= wp.t) {
+          const segmentProgress = (progress - prevT) / (wp.t - prevT);
+          const ease = segmentProgress < 0.5 ? 2 * segmentProgress * segmentProgress : -1 + (4 - 2 * segmentProgress) * segmentProgress; // EaseInOutQuad
+          currentY = prevY + (wp.y - prevY) * ease;
+          break;
+        }
+        prevY = wp.y;
+        prevT = wp.t;
+      }
+      
+      window.scrollTo(0, currentY);
+      
+      if (progress < 1) {
+        requestAnimationFrame(runCustomScroll);
+      } else {
+        scrollingActive = false;
+      }
+    }
+
+    function stopScrollOnInteraction() {
+      autoScrollActive = false;
+      scrollingActive = false;
+    }
+
+    // Capture explicit user inputs to abort auto-scroll and manual widget scroll
+    window.addEventListener('wheel', stopScrollOnInteraction, { passive: true });
+    window.addEventListener('touchmove', stopScrollOnInteraction, { passive: true });
+    window.addEventListener('mousedown', stopScrollOnInteraction, { passive: true });
+    window.addEventListener('keydown', (e) => {
+      const keys = ['ArrowDown', 'ArrowUp', 'Space', 'PageDown', 'PageUp'];
+      if (keys.includes(e.key)) {
+        stopScrollOnInteraction();
+      }
+    });
+
+    function checkCompletion() {
+      // Dismiss only if progress hits 100% AND all image frames are cached
+      if (artificialProgress >= 100 && loadedImages >= frameCount) {
+        setTimeout(() => {
+          preloader.classList.add('loaded');
+          document.body.classList.remove('loading');
+          
+          // Trigger initial text alignment and animations
+          handleScroll();
+          // Start auto-scroll at 1x speed
+          startAutoScroll();
+        }, 500); // Clean curtain slide reveal
+      }
+    }
+
+    // Load first frame immediately to prevent blank screen
+    const firstImg = new Image();
+    firstImg.src = currentFrame(0);
+    firstImg.onload = () => {
+      images[0] = firstImg;
+      loadedImages++;
+      canvas.width = firstImg.width || 1920;
+      canvas.height = firstImg.height || 1080;
+      renderFrame(0);
+      checkCompletion();
+    };
+    firstImg.onerror = () => {
+      loadedImages++;
+      checkCompletion();
+    };
+
+    // Preload remaining frames
+    for (let i = 1; i < frameCount; i++) {
+      const img = new Image();
+      img.src = currentFrame(i);
+      img.onload = () => {
+        images[i] = img;
+        loadedImages++;
+        checkCompletion();
+      };
+      img.onerror = () => {
+        images[i] = null;
+        loadedImages++;
+        checkCompletion();
+      };
+    }
+
+    let currentRenderedIndex = -1;
+
+    function renderFrame(index) {
+      if (images[index] && currentRenderedIndex !== index) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(images[index], 0, 0);
+        currentRenderedIndex = index;
+      }
+    }
+
+    // ==========================================
+    // 3. Scroll Driven Animations
+    // ==========================================
+    const heroSequence = document.getElementById('hero-sequence');
+    const text1 = document.getElementById('text-1');
+    const text2 = document.getElementById('text-2');
+    const text3 = document.getElementById('text-3');
+
+    // Animates text nodes using opacity and Y translation
+    function animateText(el, fraction, startIn, endIn, startOut, endOut) {
+      let opacity = 0;
+      let translate = 40; // initial drop-down state
+
+      if (fraction >= startIn && fraction <= endIn) {
+        const p = (fraction - startIn) / (endIn - startIn);
+        // Easing function for smoother entry
+        const easeOut = 1 - Math.pow(1 - p, 3);
+        opacity = easeOut;
+        translate = 40 * (1 - easeOut);
+      } else if (fraction > endIn && fraction < startOut) {
+        opacity = 1;
+        translate = 0;
+      } else if (fraction >= startOut && fraction <= endOut) {
+        const p = (fraction - startOut) / (endOut - startOut);
+        const easeIn = p * p * p;
+        opacity = 1 - easeIn;
+        translate = -40 * easeIn; // moves up while fading out
+      } else if (fraction > endOut) {
+        opacity = 0;
+        translate = -40;
+      }
+
+      el.style.opacity = opacity.toFixed(3);
+      el.style.transform = `translate(-50%, calc(-50% + ${translate}px))`;
+    }
+
+    let ticking = false;
+
+    function handleScroll() {
+      // 1. Calculate scrub fraction for Hero Section
+      const rect = heroSequence.getBoundingClientRect();
+      // Scroll height minus viewport height gives the total scrollable distance for the hero
+      const maxScroll = heroSequence.scrollHeight - window.innerHeight;
+      let scrollFraction = -rect.top / maxScroll;
+      
+      // Clamp between 0 and 1
+      if(scrollFraction < 0) scrollFraction = 0;
+      if(scrollFraction > 1) scrollFraction = 1;
+
+      // 2. Render Frame
+      const frameIndex = Math.min(
+        frameCount - 1,
+        Math.floor(scrollFraction * frameCount)
+      );
+      renderFrame(frameIndex);
+
+      // 3. Animate Text Elements over the scroll timeline
+      // Text 1: Hi, I'm...
+      animateText(text1, scrollFraction, 0.0, 0.1, 0.25, 0.35);
+      // Text 2: Roles...
+      animateText(text2, scrollFraction, 0.35, 0.45, 0.6, 0.7);
+      // Text 3: Tagline & Buttons...
+      animateText(text3, scrollFraction, 0.7, 0.8, 0.95, 1.1);
+
+      // 4. Fade out canvas at the very end to seamlessly transition to black bg
+      if (scrollFraction > 0.9) {
+        const fadeOut = 1 - ((scrollFraction - 0.9) * 10);
+        canvas.style.opacity = Math.max(0, fadeOut).toFixed(2);
+      } else {
+        canvas.style.opacity = 1;
+      }
+
+      // 5. Scroll Widget Logic
+      const scrollWidgetEl = document.getElementById('scroll-widget');
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      
+      if (window.scrollY > 150) {
+        scrollWidgetEl.classList.add('visible');
+      } else {
+        scrollWidgetEl.classList.remove('visible');
+      }
+
+      if (window.scrollY > totalScroll / 2) {
+        scrollWidgetEl.classList.add('up');
+      } else {
+        scrollWidgetEl.classList.remove('up');
+      }
+    }
+
+    // Scroll Widget Click Event
+    const scrollWidgetEl = document.getElementById('scroll-widget');
+    
+    // Prevent event bubbling to window mousedown which cancels scroll triggers
+    scrollWidgetEl.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+    });
+
+    scrollWidgetEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      stopScrollOnInteraction(); // Reset current scrolls
+      
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (window.scrollY > totalScroll / 2) {
+        startCustomScroll(0); // Scroll slowly through sequence up to top
+      } else {
+        startCustomScroll(document.documentElement.scrollHeight); // Scroll slowly through sequence down to bottom
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Trigger initial calculation
+    handleScroll();
+
+    // ==========================================
+    // 4. Scroll Reveal for Main Content Sections
+    // ==========================================
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.15
+    };
+    
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); // only reveal once
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.section').forEach(section => {
+      observer.observe(section);
+    });
+
+  </script>
+</body>
+</html>
