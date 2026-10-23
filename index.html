@@ -372,6 +372,23 @@
       transform: translateY(-2px);
     }
 
+    .btn-agent {
+      background: linear-gradient(135deg, rgba(0, 255, 204, 0.15), rgba(107, 124, 255, 0.2));
+      color: #00ffcc;
+      border: 1px solid rgba(0, 255, 204, 0.45);
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
+      cursor: pointer;
+      gap: 0.5rem;
+    }
+    
+    .btn-agent:hover {
+      background: linear-gradient(135deg, rgba(0, 255, 204, 0.3), rgba(107, 124, 255, 0.4));
+      color: #fff;
+      border-color: #00ffcc;
+      box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
+      transform: translateY(-2px);
+    }
+
     /* ----- Main Portfolio Content ----- */
     #main-content {
       position: relative;
@@ -699,6 +716,255 @@
       opacity: 0;
       visibility: hidden;
     }
+
+    /* ----- Floating AI Agent Widget ----- */
+    .agent-widget {
+      position: fixed;
+      bottom: 2rem;
+      right: 5.8rem;
+      height: 50px;
+      padding: 0 1.25rem 0 0.8rem;
+      border-radius: 30px;
+      background: rgba(8, 10, 20, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(0, 255, 204, 0.35);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 999998;
+      cursor: pointer;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 255, 204, 0.2);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      outline: none;
+    }
+
+    .agent-widget:hover {
+      border-color: #00ffcc;
+      box-shadow: 0 6px 30px rgba(0, 255, 204, 0.35);
+      transform: translateY(-2px);
+      background: rgba(12, 16, 30, 0.85);
+    }
+
+    .agent-widget-avatar {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00ffcc, #6b7cff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #030305;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+    }
+
+    .agent-online-pulse {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      background: #00ff66;
+      border-radius: 50%;
+      border: 2px solid #030305;
+      box-shadow: 0 0 8px #00ff66;
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    .agent-widget-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #f5f5f7;
+      white-space: nowrap;
+    }
+
+    .agent-widget-badge {
+      font-size: 0.65rem;
+      background: rgba(0, 255, 204, 0.15);
+      color: #00ffcc;
+      padding: 0.15rem 0.45rem;
+      border-radius: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    body.loading .agent-widget {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* ----- AI Agent Chat Window / Modal ----- */
+    .agent-chat-modal {
+      position: fixed;
+      bottom: 5.8rem;
+      right: 2rem;
+      width: 440px;
+      height: 680px;
+      max-height: calc(100vh - 7.5rem);
+      max-width: calc(100vw - 3rem);
+      background: rgba(7, 9, 18, 0.95);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(0, 255, 204, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 255, 204, 0.2);
+      z-index: 9999999;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px) scale(0.96);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .agent-chat-modal.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .agent-chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.25rem;
+      background: rgba(12, 16, 30, 0.85);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .agent-chat-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .agent-chat-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .agent-chat-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #a1a1a6;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .agent-chat-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .agent-chat-btn.close:hover {
+      background: rgba(255, 71, 87, 0.2);
+      color: #ff4757;
+      border-color: rgba(255, 71, 87, 0.4);
+    }
+
+    .agent-chat-body {
+      flex: 1;
+      position: relative;
+      background: #020408;
+      width: 100%;
+      height: 100%;
+    }
+
+    .agent-chat-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .agent-loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: #04060c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      color: #a1a1a6;
+      font-size: 0.9rem;
+      z-index: 2;
+      transition: opacity 0.4s ease;
+    }
+
+    .agent-loading-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(0, 255, 204, 0.15);
+      border-top-color: #00ffcc;
+      border-radius: 50%;
+      animation: agentSpin 0.8s linear infinite;
+    }
+
+    @keyframes agentSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .agent-chip {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #d1d1d6;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .agent-chip:hover {
+      background: rgba(0, 255, 204, 0.1);
+      border-color: rgba(0, 255, 204, 0.4);
+      color: #00ffcc;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+      .agent-widget {
+        right: 1.5rem;
+        bottom: 5.5rem;
+        padding: 0 0.85rem;
+      }
+      .agent-widget-label {
+        display: none;
+      }
+      .agent-chat-modal {
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+      }
+    }
   </style>
 </head>
 <body class="loading">
@@ -724,6 +990,7 @@
       <a href="#" class="logo hover-target">MHP</a>
       <nav class="nav-links">
         <a href="#about" class="nav-link hover-target">About</a>
+        <a href="#ai-agent" class="nav-link hover-target" style="color: #00ffcc; font-weight: 600;">✨ AI Twin</a>
         <a href="#skills" class="nav-link hover-target">Skills</a>
         <a href="#experience" class="nav-link hover-target">Experience</a>
         <a href="#projects" class="nav-link hover-target">Projects</a>
@@ -766,6 +1033,7 @@
         <div class="hero-text" id="text-3">
           <p>Building scalable Agentic AI, LLM applications, RAG pipelines, and high-performance backend infrastructure.</p>
           <div class="btn-group">
+            <button id="hero-agent-btn" class="btn btn-agent hover-target"><span style="margin-right:0.4rem;">✨</span> Talk to AI Twin</button>
             <a href="#projects" class="btn btn-primary hover-target">View My Work</a>
             <a href="https://drive.google.com/file/d/1EyqAo4HNa136FTYL69-OKSm2Z6kVkcVU/view" target="_blank" class="btn btn-secondary hover-target">Download Resume</a>
           </div>
@@ -784,6 +1052,48 @@
         <p style="font-size: 1.15rem; color: #d1d1d6; line-height: 1.8;">
           I am an AI Systems Engineer and 4th-year Computer Science student at IIIT Vadodara (Class of 2027), specializing in Agentic AI, LLM applications, and scalable backend architecture. My experience spans production FastAPI & Django microservices, multi-agent workflows with LangGraph, advanced RAG architectures, and Clinical NLP research (PubMedBERT & Federated Learning). I design production-oriented AI infrastructure that connects reliable APIs, retrieval systems, and transformer-based workflows.
         </p>
+      </div>
+    </section>
+
+    <!-- Interactive AI Agent Showcase Section -->
+    <section class="section" id="ai-agent">
+      <div class="glass-card hover-target" style="border: 1px solid rgba(0, 255, 204, 0.35); background: linear-gradient(145deg, rgba(0, 255, 204, 0.04), rgba(107, 124, 255, 0.02)); box-shadow: 0 0 35px rgba(0, 255, 204, 0.08);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1.8rem;">
+          <div>
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0, 255, 204, 0.12); border: 1px solid rgba(0, 255, 204, 0.3); padding: 0.3rem 0.85rem; border-radius: 20px; font-size: 0.75rem; color: #00ffcc; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.8rem;">
+              <span style="width: 8px; height: 8px; background: #00ff66; border-radius: 50%; box-shadow: 0 0 8px #00ff66;"></span>
+              Autonomous Agent • Online
+            </div>
+            <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 700; color: #fff; margin-bottom: 0.5rem;">
+              Talk to My <span>AI Digital Twin</span>
+            </h2>
+            <p style="color: #a1a1a6; font-size: 1.05rem; max-width: 650px; line-height: 1.6;">
+              Instead of browsing a static resume, chat directly with my AI agent. Trained on all my systems architectures, hackathon wins (Google Build with AI), Clinical NLP research, and live code repositories.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+            <button id="section-agent-launch" class="btn btn-agent hover-target" style="padding: 0.85rem 1.8rem;">
+              💬 Open Chat Window
+            </button>
+            <a href="https://mhdt.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary hover-target" style="padding: 0.85rem 1.8rem;">
+              Open Fullscreen ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick prompt chips -->
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 1.4rem;">
+          <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.8rem; font-weight: 600;">
+            Try asking questions like:
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
+            <button class="agent-chip hover-target" data-prompt="Show me your featured AI projects">🚀 &quot;Show me your featured AI projects&quot;</button>
+            <button class="agent-chip hover-target" data-prompt="Tell me about your Google Hackathon win">🏆 &quot;Tell me about your Google Hackathon win&quot;</button>
+            <button class="agent-chip hover-target" data-prompt="What experience do you have with Agentic AI?">💼 &quot;What experience do you have with Agentic AI?&quot;</button>
+            <button class="agent-chip hover-target" data-prompt="How does the LeapSQL-AI 3-agent pipeline work?">🧠 &quot;How does the LeapSQL-AI 3-agent pipeline work?&quot;</button>
+            <button class="agent-chip hover-target" data-prompt="How can I reach or hire you?">📬 &quot;How can I reach or hire you?&quot;</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1018,6 +1328,71 @@
       </div>
     </section>
   </main>
+
+  <!-- Floating AI Agent Widget Button -->
+  <button id="agent-widget-btn" class="agent-widget hover-target" aria-label="Talk to AI Twin">
+    <span class="agent-widget-avatar">
+      <span class="agent-online-pulse"></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 8V4H8"></path>
+        <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+        <path d="M2 14h2"></path>
+        <path d="M20 14h2"></path>
+        <path d="M15 13v2"></path>
+        <path d="M9 13v2"></path>
+      </svg>
+    </span>
+    <span class="agent-widget-label">Talk to AI Twin</span>
+    <span class="agent-widget-badge">Online</span>
+  </button>
+
+  <!-- AI Agent Floating Chat Window -->
+  <div id="agent-chat-modal" class="agent-chat-modal" role="dialog" aria-label="Mohmed's AI Digital Twin">
+    <div class="agent-chat-header">
+      <div class="agent-chat-title-group">
+        <div class="agent-widget-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;">
+          <span class="agent-online-pulse" style="width: 8px; height: 8px;"></span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8V4H8"></path>
+            <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+            <path d="M2 14h2"></path>
+            <path d="M20 14h2"></path>
+            <path d="M15 13v2"></path>
+            <path d="M9 13v2"></path>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size: 0.9rem; font-weight: 700; color: #fff; line-height: 1.2;">Mohmed's AI Twin</div>
+          <div style="font-size: 0.7rem; color: #00ffcc; display: flex; align-items: center; gap: 0.35rem;">
+            <span style="display:inline-block; width:6px; height:6px; background:#00ff66; border-radius:50%;"></span>
+            Online • DeepSeek AI Agent
+          </div>
+        </div>
+      </div>
+      <div class="agent-chat-actions">
+        <a href="https://mhdt.vercel.app/" target="_blank" rel="noopener noreferrer" class="agent-chat-btn hover-target" title="Open Fullscreen in New Tab" aria-label="Open Fullscreen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+        <button id="agent-chat-close" class="agent-chat-btn close hover-target" title="Close" aria-label="Close Agent">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="agent-chat-body">
+      <div id="agent-loading-overlay" class="agent-loading-overlay">
+        <div class="agent-loading-spinner"></div>
+        <div>Connecting to Mohmed's AI Twin...</div>
+      </div>
+      <iframe id="agent-iframe" class="agent-chat-iframe" title="Mohmed's AI Twin Agent" allow="clipboard-write; microphone"></iframe>
+    </div>
+  </div>
 
   <script>
     // ==========================================
@@ -1405,6 +1780,72 @@
     
     document.querySelectorAll('.section').forEach(section => {
       observer.observe(section);
+    });
+
+    // ==========================================
+    // 5. Interactive AI Twin Agent Controller
+    // ==========================================
+    const agentModal = document.getElementById('agent-chat-modal');
+    const agentWidget = document.getElementById('agent-widget-btn');
+    const agentCloseBtn = document.getElementById('agent-chat-close');
+    const heroAgentBtn = document.getElementById('hero-agent-btn');
+    const sectionAgentLaunch = document.getElementById('section-agent-launch');
+    const agentIframe = document.getElementById('agent-iframe');
+    const agentLoadingOverlay = document.getElementById('agent-loading-overlay');
+
+    let agentLoaded = false;
+
+    function openAgentModal() {
+      if (!agentLoaded && agentIframe) {
+        agentIframe.src = "https://mhdt.vercel.app/";
+        agentIframe.onload = () => {
+          if (agentLoadingOverlay) {
+            agentLoadingOverlay.style.opacity = '0';
+            setTimeout(() => { agentLoadingOverlay.style.display = 'none'; }, 400);
+          }
+        };
+        agentLoaded = true;
+      }
+      if (agentModal) agentModal.classList.add('open');
+    }
+
+    function closeAgentModal() {
+      if (agentModal) agentModal.classList.remove('open');
+    }
+
+    if (agentWidget) agentWidget.addEventListener('click', openAgentModal);
+    if (heroAgentBtn) heroAgentBtn.addEventListener('click', openAgentModal);
+    if (sectionAgentLaunch) sectionAgentLaunch.addEventListener('click', openAgentModal);
+    if (agentCloseBtn) agentCloseBtn.addEventListener('click', closeAgentModal);
+
+    // Prompt chips
+    document.querySelectorAll('.agent-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        openAgentModal();
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && agentModal && agentModal.classList.contains('open')) {
+        closeAgentModal();
+      }
+    });
+
+    // Preload agent iframe shortly after page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (!agentLoaded && agentIframe) {
+          agentIframe.src = "https://mhdt.vercel.app/";
+          agentIframe.onload = () => {
+            if (agentLoadingOverlay) {
+              agentLoadingOverlay.style.opacity = '0';
+              setTimeout(() => { agentLoadingOverlay.style.display = 'none'; }, 400);
+            }
+          };
+          agentLoaded = true;
+        }
+      }, 3500);
     });
   </script>
 </body>
